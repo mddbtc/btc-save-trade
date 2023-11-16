@@ -1,0 +1,265 @@
+// https://t.me/+aFMGDLtCyOgyODNi
+
+//@version=5
+indicator(title="Safety trade", shorttitle="Safety Trade", overlay=true, max_labels_count = 500)
+
+input_draw = input.string(defval = "Lines", title="Drawing", options=["Waves", "Lines"])
+input_cash = input.float(defval = 1000.00, title="Initial capital (USD)", minval = 1.00)
+input_perc_line_1 = input.float(defval = 27.2020, title = "Line 1 shift up %")
+input_perc_line_2 = input.float(defval = 12.7845, title = "Line 2 shift up %")
+input_perc_line_3 = input.float(defval = 5.5556, title = "Line 3 shift down %")
+input_perc_line_4 = input.float(defval = 10.1156, title = "Line 4 shift down %")
+input_perc_line_5 = input.float(defval = 19.0250, title = "Line 5 shift down %")
+lenght = input(12, "Lenght SMA")
+src = close
+Source_MA = ta.sma(src, lenght)
+curr = syminfo.currency
+basecurr = syminfo.basecurrency
+
+// Date
+Year = input(2021)
+Month = input(1)
+Day = input(1)
+Hours = input(0)
+Minutes = input(0)
+start = timestamp(Year, Month, Day, Hours, Minutes)
+
+line_1 = Source_MA + (Source_MA * input_perc_line_1/100)
+line_2 = Source_MA + (Source_MA * input_perc_line_2/100)
+line_3 = Source_MA - (Source_MA * input_perc_line_3/100)
+line_4 = Source_MA - (Source_MA * input_perc_line_4/100)
+line_5 = Source_MA - (Source_MA * input_perc_line_5/100)
+
+plot(input_draw == "Waves" ? line_1 : na, linewidth = 2, color=color.red,      title="MA1")
+plot(input_draw == "Waves" ? line_2 : na, linewidth = 1, color=#FF7373,        title="MA2")
+plot(input_draw == "Waves" ? line_3 : na, linewidth = 1, color=color.white,    title="MA3")
+plot(input_draw == "Waves" ? line_4 : na, linewidth = 1, color=#76CD76,        title="MA4")
+plot(input_draw == "Waves" ? line_5 : na, linewidth = 2, color=color.green,    title="MA5")
+
+// 1
+var label_1 = label.new(na, na, style=label.style_label_left, xloc = xloc.bar_index)
+label.set_x(label_1, bar_index + 3)
+label.set_y(label_1, line_1)
+label.set_text(label_1, str.tostring(float (line_1), "#.##"))
+label.set_color(label_1, color.red)
+label.set_textcolor(label_1, color.white)
+
+Y_position_line_1 = line_1
+if input_draw == "Lines"
+    var level_line_1 = line.new(na,na,na,na)
+    line.set_x1(level_line_1, bar_index[9])
+    line.set_x2(level_line_1, bar_index)
+    line.set_y1(level_line_1, Y_position_line_1)
+    line.set_y2(level_line_1, Y_position_line_1)
+    line.set_color(level_line_1, color.red)
+    line.set_width(level_line_1, 3)
+
+// 2
+var label_2 = label.new(na, na, style=label.style_label_left, xloc = xloc.bar_index)
+label.set_x(label_2, bar_index + 3)
+label.set_y(label_2, line_2)
+label.set_text(label_2, str.tostring(float (line_2), "#.##"))
+label.set_color(label_2, color = #EF9292)
+label.set_textcolor(label_2, color.white)
+
+Y_position_line_2 = line_2
+if input_draw == "Lines"
+    var level_line_2 = line.new(na,na,na,na)
+    line.set_x1(level_line_2, bar_index[9])
+    line.set_x2(level_line_2, bar_index)
+    line.set_y1(level_line_2, Y_position_line_2)
+    line.set_y2(level_line_2, Y_position_line_2)
+    line.set_color(level_line_2, color = #EF9292)
+    line.set_width(level_line_2, 2)
+
+// 3
+var label_3 = label.new(na, na, style=label.style_label_left, xloc = xloc.bar_index)
+label.set_x(label_3, bar_index + 3)
+label.set_y(label_3, line_3)
+label.set_text(label_3, str.tostring(float (line_3), "#.##"))
+label.set_color(label_3, color.white)
+label.set_textcolor(label_3, color.black)
+
+Y_position_line_3 = line_3
+if input_draw == "Lines"
+    var level_line_3 = line.new(na,na,na,na)
+    line.set_x1(level_line_3, bar_index[9])
+    line.set_x2(level_line_3, bar_index)
+    line.set_y1(level_line_3, Y_position_line_3)
+    line.set_y2(level_line_3, Y_position_line_3)
+    line.set_color(level_line_3, color.white)
+
+// 4
+var label_4 = label.new(na, na, style=label.style_label_left, xloc = xloc.bar_index)
+label.set_x(label_4, bar_index + 3)
+label.set_y(label_4, line_4)
+label.set_text(label_4, str.tostring(float (line_4), "#.##"))
+label.set_color(label_4, color = color.green)
+label.set_textcolor(label_4, color.white)
+
+Y_position_line_4 = line_4
+if input_draw == "Lines"
+    var level_line_4 = line.new(na,na,na,na)
+    line.set_x1(level_line_4, bar_index[9])
+    line.set_x2(level_line_4, bar_index)
+    line.set_y1(level_line_4, Y_position_line_4)
+    line.set_y2(level_line_4, Y_position_line_4)
+    line.set_color(level_line_4, color = color.green)
+    line.set_width(level_line_4, 2)
+
+// 5
+var label_5 = label.new(na, na, style=label.style_label_left, xloc = xloc.bar_index)
+label.set_x(label_5, bar_index + 3)
+label.set_y(label_5, line_5)
+label.set_text(label_5, str.tostring(float (line_5), "#.##"))
+label.set_color(label_5, color = #116211)
+label.set_textcolor(label_5, color.white)
+
+Y_position_line_5 = line_5
+if input_draw == "Lines"
+    var level_line_5 = line.new(na,na,na,na)
+    line.set_x1(level_line_5, bar_index[9])
+    line.set_x2(level_line_5, bar_index)
+    line.set_y1(level_line_5, Y_position_line_5)
+    line.set_y2(level_line_5, Y_position_line_5)
+    line.set_color(level_line_5, color = #116211)
+    line.set_width(level_line_5, 3)
+
+CrossBuyClose100    = ta.cross(high,    line_1)
+CrossBuyClose50     = ta.cross(high,    line_2)
+CrossBuy25          = ta.cross(close,   line_3)
+CrossBuy50          = ta.cross(low,     line_4)
+CrossBuy100         = ta.cross(low,     line_5)
+
+alertcondition(CrossBuy50,          title="Buy 50%",            message="Buy 50% alert")
+alertcondition(CrossBuy100,         title="Buy 100%",           message="Buy 100% alert")
+alertcondition(CrossBuyClose50,     title="Close 50% Buy",      message="Close 50% Buy alert")
+alertcondition(CrossBuyClose100,    title="Close 100% Buy",     message="Close 100% Buy alert")
+alertcondition(CrossBuyClose50,     title="Sell 50%",           message="Sell 50% alert")
+alertcondition(CrossBuyClose100,    title="Sell 100%",          message="Sell 100% alert")
+alertcondition(CrossBuy50,          title="Close 50% Sell",     message="Close 50% Sell alert")
+alertcondition(CrossBuy100,         title="Close 100% Sell",    message="Close 100% Sell alert")
+
+var Buy25Counter = 0
+var Buy50Counter = 0
+var Buy100Counter = 0
+var CloseBuy50Counter = 0
+var CloseBuy100Counter = 0
+var float Cash = input_cash
+var float Coin = 0.00
+
+if time >= start and CrossBuy25 and Buy25Counter == 0 and not CrossBuy50 and Buy50Counter == 0 and Buy100Counter == 0
+    Buy25 = label.new(na, na, yloc = yloc.belowbar)
+    label.set_x(Buy25, bar_index)
+    label.set_xloc(Buy25, bar_index, xloc.bar_index)
+    label.set_y(Buy25, low)
+    label.set_text(Buy25, "buy 25%")
+    label.set_color(Buy25, color.green)
+    label.set_textcolor(Buy25, color.green)
+    label.set_style(Buy25, label.style_arrowup)
+    label.set_size(Buy25, size.normal)
+    Buy25Counter := Buy25Counter + 1
+    CloseBuy100Counter := 0
+    Coin := Coin + ((Cash*0.25) / close)
+    Cash := Cash - (Cash*0.25)
+
+if time >= start and CrossBuy50 and Buy50Counter == 0 and not CrossBuy100 and Buy100Counter == 0 
+    Buy50 = label.new(na, na, yloc = yloc.belowbar)
+    label.set_x(Buy50, bar_index)
+    label.set_xloc(Buy50, bar_index, xloc.bar_index)
+    label.set_y(Buy50, low)
+    label.set_text(Buy50, "buy 50%")
+    label.set_color(Buy50, color.green)
+    label.set_textcolor(Buy50, color.green)
+    label.set_style(Buy50, label.style_arrowup)
+    label.set_size(Buy50, size.normal)
+    Buy50Counter := Buy50Counter + 1
+    CloseBuy100Counter := 0
+    Coin := Coin + ((Cash*0.5) / close)
+    Cash := Cash - (Cash*0.5)
+
+if time >= start and CrossBuy100 and Buy100Counter == 0
+    Buy100 = label.new(na, na, yloc = yloc.belowbar)
+    label.set_x(Buy100, bar_index)
+    label.set_xloc(Buy100, bar_index, xloc.bar_index)
+    label.set_y(Buy100, low)
+    label.set_text(Buy100, "buy 100%")
+    label.set_color(Buy100, color.green)
+    label.set_textcolor(Buy100, color.green)
+    label.set_style(Buy100, label.style_arrowup)
+    label.set_size(Buy100, size.normal)
+    Buy100Counter := Buy100Counter + 1
+    CloseBuy100Counter := 0
+    Coin := Coin + (Cash / close)
+    Cash := Cash - Cash
+
+if CrossBuyClose50 and (Buy25Counter > 0 or Buy50Counter > 0 or Buy100Counter > 0) and not CrossBuyClose100
+    BuyClose50 = label.new(na, na, yloc = yloc.abovebar)
+    label.set_x(BuyClose50, bar_index)
+    label.set_xloc(BuyClose50, bar_index, xloc.bar_index)
+    label.set_y(BuyClose50, high)
+    label.set_text(BuyClose50, "close 50% long")
+    label.set_color(BuyClose50, color.red)
+    label.set_textcolor(BuyClose50, color.red)
+    label.set_style(BuyClose50, label.style_arrowdown)
+    label.set_size(BuyClose50, size.normal)
+    CloseBuy50Counter := CloseBuy50Counter + 1
+    Buy25Counter := 0
+    Buy50Counter := 0
+    Buy100Counter := 0
+    Cash := Cash + ((Coin*0.5)*close)
+    Coin := Coin - (Coin*0.5)
+
+if CrossBuyClose100 and (Buy25Counter > 0 or Buy50Counter > 0 or Buy100Counter > 0 or CloseBuy50Counter > 0)
+    BuyClose100 = label.new(na, na, yloc = yloc.abovebar)
+    label.set_x(BuyClose100, bar_index)
+    label.set_xloc(BuyClose100, bar_index, xloc.bar_index)
+    label.set_y(BuyClose100, high)
+    label.set_text(BuyClose100, "close ALL long")
+    label.set_color(BuyClose100, color.red)
+    label.set_textcolor(BuyClose100, color.red)
+    label.set_style(BuyClose100, label.style_arrowdown)
+    label.set_size(BuyClose100, size.normal)
+    CloseBuy100Counter := CloseBuy100Counter + 1
+    CloseBuy50Counter := 0
+    Buy25Counter := 0
+    Buy50Counter := 0
+    Buy100Counter := 0
+    Cash := Cash + (Coin*close)
+    Coin := Coin - Coin
+
+green = color.new(#1b5e20, 60)
+bgcolor(color=Buy100Counter > 0 and Buy100Counter[1] == 0 ? green : na, title = "Buy 100%")
+red = color.new(#801922, 60)
+bgcolor(color=CloseBuy100Counter > 0 and CloseBuy100Counter[1] == 0 ? red : na, title = "Close 100%")
+
+Profit = (Cash+(Coin*close)) / input_cash
+var Table = table.new(position = position.top_right, columns = 2, rows = 6, frame_color = color.white, frame_width = 2, bgcolor = #333333, border_width = 1)
+table.set_border_color(table_id = Table, border_color=#888888)
+table.cell(table_id = Table, column = 0, row = 0, text = "LONG Position", text_color = color.white)
+table.cell(table_id = Table, column = 1, row = 0, text = "PRICE", text_color = color.white)
+table.cell(table_id = Table, column = 0, row = 1, text = "Close ALL", text_color = color.white, bgcolor = color.red)
+table.cell(table_id = Table, column = 1, row = 1, text = str.tostring(float (line_1), "#.##"), text_color = color.white, bgcolor = color.red)
+table.cell(table_id = Table, column = 0, row = 2, text = "Close 50%", text_color = color.white, bgcolor = #EF9292)
+table.cell(table_id = Table, column = 1, row = 2, text = str.tostring(float (line_2), "#.##"), text_color = color.white, bgcolor = #EF9292)
+table.cell(table_id = Table, column = 0, row = 3, text = "Open BUY 25%", text_color = color.black, bgcolor = color.white)
+table.cell(table_id = Table, column = 1, row = 3, text = str.tostring(float (line_3), "#.##"), text_color = color.black, bgcolor = color.white)
+table.cell(table_id = Table, column = 0, row = 4, text = "Open BUY 50%", text_color = color.white, bgcolor = color.green)
+table.cell(table_id = Table, column = 1, row = 4, text = str.tostring(float (line_4), "#.##"), text_color = color.white, bgcolor = color.green)
+table.cell(table_id = Table, column = 0, row = 5, text = "Open BUY 100%", text_color = color.white, bgcolor = #116211)
+table.cell(table_id = Table, column = 1, row = 5, text = str.tostring(float (line_5), "#.##"), text_color = color.white, bgcolor = #116211)
+
+var TableCapital = table.new(position = position.bottom_right, columns = 3, rows = 2, frame_color = color.white, frame_width = 2, bgcolor = #333333, border_width = 1)
+table.set_border_color(table_id = TableCapital, border_color=#888888)
+table.cell(table_id = TableCapital, column = 0, row = 0, text = curr + " on hand", text_color = color.white)
+table.cell(table_id = TableCapital, column = 1, row = 0, text = basecurr + " on hand", text_color = color.white)
+table.cell(table_id = TableCapital, column = 2, row = 0, text = "Profit", text_color = color.white)
+table.cell(table_id = TableCapital, column = 0, row = 1, text = str.tostring(Cash, "#.##"), text_color = color.white)
+table.cell(table_id = TableCapital, column = 1, row = 1, text = str.tostring(Coin, "#.########"), text_color = color.white)
+table.cell(table_id = TableCapital, column = 2, row = 1, text = str.tostring((Profit*100)-100, "#.##"), text_color = color.white)
+
+alertcondition(Buy25Counter > 0 and Buy25Counter[1] == 0, title="Buy 25%", message="Buy 25% alert")
+alertcondition(Buy50Counter > 0 and Buy50Counter[1] == 0, title="Buy 50%", message="Buy 50% alert")
+alertcondition(Buy100Counter > 0 and Buy100Counter[1] == 0, title="Buy 100%", message="Buy 100% alert")
+alertcondition(CloseBuy50Counter > 0 and CloseBuy50Counter[1] == 0, title="Close 50% long", message="Close 50% long alert")
+alertcondition(CloseBuy100Counter > 0 and CloseBuy100Counter[1] == 0, title="Close 100% long", message="Close 100% long alert")
